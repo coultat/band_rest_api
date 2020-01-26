@@ -1,6 +1,6 @@
 import pytest
 import sqlite3
-from rascunhos import create_app
+from api import create_app
 
 #é como se a funçao estivesse na primeira linha
 @pytest.fixture
@@ -29,6 +29,7 @@ def test_bands_post(rascunhos_client, rascunhos_db):
         "genre": "rock"
     })
     assert response.status_code == 200
+    assert response.json['message'] == "if you are reading this is because something went very well :-)"
 
 
 def test_bands_get(rascunhos_client, rascunhos_db):
@@ -49,6 +50,24 @@ def test_list_bands(rascunhos_client, rascunhos_db):
     assert response.status_code == 200
     assert response.json['message'] == 'é nois'
 
+
+def test_delete_band_from_list(rascunhos_client, rascunhos_db):
+    response = rascunhos_client.delete('/bands/2')
+    assert response.status_code == 200
+    assert response.json['message'] == 'com passo de formiga e sem vontade'
+
+
+def test_put_from_band(rascunhos_client, rascunhos_db):
+    response = rascunhos_client.put(
+        '/bands/4',
+        json={
+            "name": "Soundgarden",
+            "members": 4,
+            "birth": "1984",
+            "genre": "grunge"
+        })
+    assert response.status_code == 200
+    assert response.json['message'] == 'vai forte meu!'
 
 
 def test_status(rascunhos_client):

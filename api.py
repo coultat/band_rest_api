@@ -42,9 +42,15 @@ def create_app(db_name):
             return jsonify({'message': 'é nois'})
         if request.method == 'DELETE':
             cursor.execute(''' DELETE FROM bands WHERE id = ?''', (name,))
+            conn.commit()
+            return jsonify({'message': 'com passo de formiga e sem vontade'})
         if request.method == 'PUT':
+            args = request.json
             cursor.execute('''UPDATE bands SET name = (?), members = (?), birth = (?),genre = (?) 
-                        WHERE id = '?';''', (args['name'], args['members'], args['birth'], args['genre'], name))
+                        WHERE name = ?;''', (args['name'], args['members'], args['birth'], args['genre'], name, ))
+            conn.commit()
+            return jsonify({'message': 'vai forte meu!'})
+
 
 
 

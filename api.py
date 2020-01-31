@@ -22,7 +22,7 @@ def create_app(db_name):
             cursor = conn.cursor()
             cursor.execute('''
                 INSERT INTO bands(name, members, birth, genre)VALUES(?,?,?,?)'''
-                           ,(args['name'], args['members'], args['birth'], args['genre'])
+                           ,(args['name'], args['members'], args['birth'], args['genre']),
             )
             conn.commit()
             conn.close()
@@ -30,21 +30,44 @@ def create_app(db_name):
         if request.method == 'GET':
             return jsonify({'message':'if you are reading this is because was asked in the DB'})
 
+    @app.route('/band', methods=['POST'])
+    def post_band():
+        args = request.json
+        connection = sqlite3.connect(db_name)
+        cursor = connection.cursor()
+        bands = {
+            'name': args['name'],
+            'members': args['members'],
+            'birth': args['birth'],
+            'genre': args['genre']
+        }
+        cursor.execute('''INSERT INTO bands(name, members, birth, genre) 
+                            VALUES(?,?,?,?)'''
+                       , (args['name'], args['members'], args['birth'], args['genre']))
+        return jsonify({'id': cursor.lastrowid, **bands})
 
-    @app.route('/bands/<name>', methods=['GET', 'DELETE', 'PUT'])
-    def list_bands(name):
+
+
+    @app.route('/bands/<id>', methods=['GET', 'DELETE', 'PUT'])
+    def list_bands(id):
         conn = sqlite3.connect(db_name)
         cursor = conn.cursor()
         if request.method == 'GET':
-            cursor.execute('''SELECT * FROM bands WHERE id = ?''', (name,))
+            cursor.execute('''SELECT * FROM bands WHERE id = ?''', (id,))
             row = cursor.fetchall()
             print(row)
             return jsonify({'message': 'é nois'})
         if request.method == 'DELETE':
-            cursor.execute(''' DELETE FROM bands WHERE id = ?''', (name,))
+            cursor.execute(''' DELETE FROM bands WHERE id = ?''', (id,))
+            conn.commit()
+            return jsonify({'message': 'com passo de formiga e sem vontade'})
         if request.method == 'PUT':
+            args = request.json
             cursor.execute('''UPDATE bands SET name = (?), members = (?), birth = (?),genre = (?) 
-                        WHERE id = '?';''', (args['name'], args['members'], args['birth'], args['genre'], name))
+                        WHERE id = ?;''', (args['name'], args['members'], args['birth'], args['genre'], name, ))
+            conn.commit()
+            return jsonify({'message': 'vai forte meu!'})
+
 
 
 

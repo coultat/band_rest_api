@@ -46,6 +46,15 @@ def create_app(db_name):
                        , (args['name'], args['members'], args['birth'], args['genre']))
         return jsonify({'id': cursor.lastrowid, **bands})
 
+    @app.route('/band/<id>', methods=['PUT'])
+    def update_band(id):
+        args = request.json
+        connection = sqlite3.connect(db_name)
+        cursor = connection.cursor()
+        cursor.execute('''UPDATE bands SET name = (?), members = (?), birth = (?),genre = (?) 
+                        WHERE id = ?''', (args['name'], args['members'], args['birth'], args['genre'], id, ))
+        connection.commit()
+        return jsonify({'id': int(id), **args})
 
 
     @app.route('/bands/<id>', methods=['GET', 'DELETE', 'PUT'])
@@ -66,9 +75,10 @@ def create_app(db_name):
             cursor.execute('''UPDATE bands SET name = (?), members = (?), birth = (?),genre = (?) 
                         WHERE id = ?;''', (args['name'], args['members'], args['birth'], args['genre'], name, ))
             conn.commit()
-            return jsonify({'message': 'vai forte meu!'})
 
 
+
+#Procurar
 
 
     return app

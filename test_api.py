@@ -32,6 +32,15 @@ def test_bands_post(client, rascunhos_db):
     assert response.json['message'] == "if you are reading this is because something went very well :-)"
 
 
+def test_patch_band(client, rascunhos_db):
+    response = client.post(
+        '/bands',
+        json={
+            "name": "amigos"
+        })
+    assert response.status_code == 200
+
+
 def test_bands_get(client, rascunhos_db):
     response = client.get(
     '/bands')
@@ -126,6 +135,20 @@ def test_post_band(client, rascunhos_db):
     assert response.status_code == 200
     assert response.json['name'] == "Paralamas do Sucesso"
     assert type(response.json.get('id')) == int
+
+
+def test_patch_band(client, rascunhos_db):
+    banda = 'sepultura do caralho'
+    members = 5
+    response = client.patch(
+        '/band',
+        json={
+            "name": banda,
+            "members": members
+        }
+    )
+    assert response.status_code == 200
+    assert response.json['message'] == banda
 
 
 def test_put_band(client, rascunhos_db):

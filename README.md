@@ -1,1 +1,1 @@
-# API rest de bandas brasileiras
+# API rest de bandas genericas

@@ -104,8 +104,9 @@ def create_app(db_name):
         if request.method == 'PUT':
             args = request.json
             cursor.execute('''UPDATE bands SET name = (?), members = (?), birth = (?),genre = (?) 
-                        WHERE id = ?;''', (args['name'], args['members'], args['birth'], args['genre'], name, ))
+                        WHERE id = ?;''', (id, args['name'], args['members'], args['birth'], args['genre']))
             conn.commit()
+            return jsonify({'message': 'vai forte meu!'})
 
 
 
